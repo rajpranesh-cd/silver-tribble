@@ -11,8 +11,8 @@ jobs:
           name: Install Snyk CLI
           command: |
             curl --compressed https://static.snyk.io/cli/latest/snyk-macos -o snyk
-            chmod +x ./snyk
-            mv ./snyk /usr/local/bin/
+            sudo chmod +x ./snyk
+            sudo mv ./snyk /usr/local/bin/
 
       # Authenticate with Snyk using an API token (replace YOUR_SNYK_API_TOKEN with your actual token)
       - run:
