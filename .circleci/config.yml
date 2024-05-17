@@ -1,31 +1,18 @@
-version: 2.1
+version: '2.1'
+orbs:
+  snyk: snyk/snyk@x.y.z
 jobs:
   build:
     docker:
-      - image: cimg/python:3.10.1 
+      - image: cimg/node:lts
     steps:
-      - checkout  # Checkout the source code from the repository
-
-      # Install Snyk CLI
+      - checkout
+      - run: npm ci
+      - snyk/install
       - run:
-          name: Install Snyk CLI
-          command: |
-            curl --compressed https://static.snyk.io/cli/latest/snyk-macos -o snyk
-            sudo chmod +x ./snyk
-            sudo mv ./snyk /usr/local/bin/
-
-      # Authenticate with Snyk using an API token (replace YOUR_SNYK_API_TOKEN with your actual token)
+          command: snyk version
+          name: Which version of snyk is installed
       - run:
-          name: Authenticate with Snyk
-          command: snyk auth 038907df-da10-4ee4-850a-98cdc55685bb
-
-      # Run Snyk code test to scan the source code for vulnerabilities
-      - run:
-          name: Snyk Code Test
           command: snyk code test
-
-workflows:
-  version: 2
-  build_and_scan:
-    jobs:
-      - build
+          name: Run code scan
+workflows: null
