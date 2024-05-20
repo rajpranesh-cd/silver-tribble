@@ -5,8 +5,14 @@ jobs:
     machine:
       image: ubuntu-2004:202008-01
     steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      - checkout # Check out the code in the project directory
+      - run:
+          name: Install Node.js and npm
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y nodejs npm
+            sudo npm install -g npm@latest
+      - run: echo "hello world" # Run the `echo` command
 
 workflows:
   my-workflow:
