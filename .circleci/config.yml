@@ -1,12 +1,29 @@
-version: '2.1'
-orbs:
-  snyk: snyk/snyk@1.2.3
+version: 2.1
+
 jobs:
-  build:
-    docker:
-      - image: cimg/node:lts
+  hello-job:
+    machine:
+      image: ubuntu-2004:202008-01
     steps:
-      - checkout
-      - run: npm ci
-      - snyk/scan
-workflows: null
+      - checkout # Check out the code in the project directory
+      - run:
+          name: Install Node.js and npm
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y nodejs npm
+            sudo npm install -g npm@latest
+      - run:
+          name: Install Snyk
+          command: |
+            curl --compressed https://static.snyk.io/cli/latest/snyk-linux -o snyk
+            chmod +x ./snyk
+            sudo mv ./snyk /usr/local/bin/
+      - run:
+          name: Check Snyk Version
+          command: snyk --version
+      - run: echo "hello world" # Run the `echo` command
+
+workflows:
+  my-workflow:
+    jobs:
+      - hello-job
