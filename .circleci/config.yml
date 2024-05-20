@@ -1,6 +1,6 @@
 version: '2.1'
 orbs:
-  snyk: snyk/snyk@2.1.0
+  snyk: snyk/snyk@1.2.3
 jobs:
   build:
     docker:
@@ -8,11 +8,5 @@ jobs:
     steps:
       - checkout
       - run: npm ci
-      - snyk/install
-      - run:
-          command: snyk version
-          name: Which version of snyk is installed
-      - run:
-          command: snyk code test
-          name: Run code scan
+      - snyk/scan
 workflows: null
