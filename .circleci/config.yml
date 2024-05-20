@@ -7,11 +7,17 @@ jobs:
     steps:
       - checkout # Check out the code in the project directory
       - run:
-          name: Install Node.js and npm
+          name: Install Node.js, npm, and snyk
           command: |
             sudo apt-get update
             sudo apt-get install -y nodejs npm
             sudo npm install -g npm@latest
+            sudo npm install -g snyk
+      - run:
+          name: Check npm and snyk versions
+          command: |
+            npm --version
+            snyk --version
       - run: echo "hello world" # Run the `echo` command
 
 workflows:
