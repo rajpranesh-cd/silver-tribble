@@ -1,36 +1,18 @@
-version: 2.1
-
+version: '2.1'
+orbs:
+  snyk: snyk/snyk@2.1.0
 jobs:
-  hello-job:
-    machine:
-      image: ubuntu-2004:202008-01
+  build:
+    docker:
+      - image: cimg/node:lts
     steps:
-      - checkout # Check out the code in the project directory
+      - checkout
+      - run: npm ci
+      - snyk/install
       - run:
-          name: Install nvm and Node.js
-          command: |
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install node
-            nvm use node
+          command: snyk version
+          name: Which version of snyk is installed
       - run:
-          name: Install npm@latest and snyk
-          command: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm install -g npm@latest
-            npm install -g snyk
-      - run:
-          name: Check npm and snyk versions
-          command: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm --version
-            snyk --version
-      - run: echo "hello world" # Run the `echo` command
-
-workflows:
-  my-workflow:
-    jobs:
-      - hello-job
+          command: snyk code test
+          name: Run code scan
+workflows: null
