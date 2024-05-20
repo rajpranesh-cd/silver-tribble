@@ -1,12 +1,14 @@
-version: '2.1'
-orbs:
-  snyk: snyk/snyk@2.1.0
+version: 2.1
+
 jobs:
-  build:
-    docker:
-      - image: cimg/node:lts
+  hello-job:
+    machine:
+      image: ubuntu-2204:2022.07.1
     steps:
-      - checkout
-      - run: npm ci
-      - snyk/install
-workflows: null
+      - checkout # check out the code in the project directory
+      - run: echo "hello world" # run the `echo` command
+
+workflows:
+  my-workflow:
+    jobs:
+      - hello-job
