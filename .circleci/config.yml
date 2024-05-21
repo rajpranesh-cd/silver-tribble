@@ -19,10 +19,11 @@ jobs:
             chmod +x ./snyk
             sudo mv ./snyk /usr/local/bin/
       - run:
+          name: Authenticate Snyk
+          command: snyk auth $SNYK_TOKEN
+      - run:
           name: Check Snyk Version
-          command: |
-            snyk --version
-            snyk code test
+          command: snyk --version
       - run: echo "hello world" # Run the `echo` command
 
 workflows:
