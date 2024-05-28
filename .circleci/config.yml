@@ -1,32 +1,37 @@
 version: 2.1
+orbs: 
+  snyk: snyk/snyk@1.1.2
 
 jobs:
-  hello-job:
-    machine:
-      image: ubuntu-2004:202008-01
+  build-and-test:
+    docker:
+      - image: cimg/openjdk:11.0
     steps:
-      - checkout # Check out the code in the project directory
+      - checkout
       - run:
-          name: Install Node.js and npm
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y nodejs npm
-            sudo npm install -g npm@latest
+          name: Test
+          command: mvn test
+  snyk-scan:
+    docker:
+      - image: cimg/openjdk:11.0-node
+    steps:
+      - checkout
       - run:
-          name: Install Snyk
-          command: |
-            curl --compressed https://static.snyk.io/cli/latest/snyk-linux -o snyk
-            chmod +x ./snyk
-            sudo mv ./snyk /usr/local/bin/
+          name: Install Snyk to HTML
+          command: npm install --prefix=$HOME/.local -g snyk-to-html
+      - snyk/scan:
+          monitor-on-build: false
+          fail-on-issues: false
+          command: code test
+          additional-arguments: --json-file-output=code-results.json
       - run:
-          name: Authenticate Snyk
-          command: snyk auth $SNYK_TOKEN
-      - run:
-          name: Check Snyk Version
-          command: snyk --version
-      - run: echo "hello world" # Run the `echo` command
+          name: Generate Snyk HTML report
+          command: cat code-results.json | snyk-to-html -o code-report.html
+      - store_artifacts:
+          path: code-report.html
 
 workflows:
-  my-workflow:
+  build-test-snyk:
     jobs:
-      - hello-job
+      - build-and-test
+      - snyk-scan
