@@ -1,4 +1,4 @@
-#Gitleaks 
+#Gitleaks101
 name: gitleaks
 on:
   pull_request:
