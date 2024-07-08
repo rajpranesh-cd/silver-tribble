@@ -1,2 +1,2 @@
-src/dev.env:generic-api-key:2
-src/dev.env:generic-api-key:1
+dev.env:generic-api-key:2
+dev.env:generic-api-key:1
