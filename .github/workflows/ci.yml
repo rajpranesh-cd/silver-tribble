@@ -27,24 +27,17 @@ jobs:
         id: gitleaks
         continue-on-error: true  # Continue the job even if leaks are detected
         run: |
-          gitleaks detect --source=. --redact -v --exit-code=2 --report-format=junit --report-path=results.xml --log-level=debug
+          gitleaks detect --source=. --redact -v --exit-code=2 --report-format=csv --report-path=results.csv --log-level=debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE}} # Only required for Organizations, not personal accounts.
-      - name: Convert JUnit XML to HTML
-        uses: pl-strflt/junit-xml-to-html@v1
-        with:
-          mode: 'no-frames'
-          input: 'results.xml'
-          output: 'results.html'
-      
-      
+
       - name: Upload Gitleaks report
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: gitleaks-report
-          path: results.html
+          path: results.csv
       - name: Check for Gitleaks exit code
         if: steps.gitleaks.outcome == 'failure'
         run: |
